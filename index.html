@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>World-Shaper</title>
+    <link rel="stylesheet" href="pannellum/pannellum.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root{
+            --bg: #ffffff;
+            --bg2: #fefefe;
+            --panel: rgba(255,255,255,0.98);
+            --card: rgba(255,255,255,1);
+            --stroke: rgba(59, 130, 246, 0.2);
+            --text: #0f172a;
+            --muted: #64748b;
+            --brand: #3b82f6;
+            --brand2: #06b6d4;
+            --accent1: #14b8a6;
+            --accent2: #f59e0b;
+            --shadow-sm: 0 4px 12px rgba(59,130,246,.15);
+            --shadow-md: 0 16px 40px rgba(6,182,212,.18);
+        }
+
+        html, body { height: 100%; }
+        body{
+            font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(1400px 700px at 15% -5%, rgba(59,130,246,.20), transparent 65%),
+                radial-gradient(1100px 600px at 90% 15%, rgba(6,182,212,.18), transparent 65%),
+                radial-gradient(1000px 550px at 50% 80%, rgba(20,184,166,.15), transparent 60%),
+                linear-gradient(135deg, #f0f9ff 0%, #ecfeff 25%, #f0fdfa 50%, #fff7ed 75%, #fef3f7 100%);
+        }
+
+        main.container{
+            background: rgba(255,255,255,0.92);
+            border: 2px solid;
+            border-image: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(6,182,212,0.15), rgba(20,184,166,0.12)) 1;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(6,182,212,.12), 0 0 0 1px rgba(59,130,246,.1);
+            backdrop-filter: blur(16px);
+        }
+
+        .group-title { margin: 12px 0 6px; font-weight: bold; }
+        .sv-group { margin-bottom: 16px; }
+
+        .top-banner {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            width: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(240,249,255,0.95) 100%);
+            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+            border-bottom: 2px solid;
+            border-image: linear-gradient(90deg, rgba(59,130,246,0.15), rgba(6,182,212,0.15)) 1;
+            box-shadow: 0 8px 24px rgba(6,182,212,.12);
+        }
+        .top-banner-inner {
+            max-width: 1280px; 
+            margin: 0 auto;
+            padding: 0 16px;
+            height: 64px; 
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .brand img { height: 32px; width: 32px; display: block; }
+        .brand .title { font-size: 20px; font-weight: 600; color: #111827; }
+
+        .top-nav { display: none; }
+        @media (min-width: 768px) {
+            .top-nav { display: flex; align-items: center; gap: 24px; }
+        }
+        .top-nav a {
+            color: #475569;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 200ms ease;
+            padding: 8px 14px;
+            border-radius: 999px;
+        }
+        .top-nav a:hover { 
+            color: #3b82f6; 
+            background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(6,182,212,0.12));
+            transform: translateY(-1px);
+        }
+
+        .btn-demo {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 20px;
+            border-radius: 999px;
+            border: none;
+            background: linear-gradient(135deg, #3b82f6, #06b6d4);
+            color: #ffffff;
+            font-size: 14px; font-weight: 600;
+            text-decoration: none;
+            transition: all 200ms ease;
+            box-shadow: 0 4px 12px rgba(59,130,246,.3);
+        }
+        .btn-demo:hover { 
+            background: linear-gradient(135deg, #2563eb, #0891b2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59,130,246,.4);
+        }
+
+        .container { max-width: 1200px; margin: 18px auto; padding: 18px; }
+        section { padding: 28px 0; }
+        h2 { margin: 0 0 12px; font-size: 26px; letter-spacing: -0.02em; }
+        p { margin: 10px 0; line-height: 1.7; color: #334155; }
+        .section-subtitle { margin-top: 14px; font-size: 16px; color: #475569; text-align: center; max-width: 52rem; margin-left: auto; margin-right: auto; }
+        #demo h2 { text-align: center; }
+        #gallery h2 { text-align: center; }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #3b82f6, #06b6d4, #14b8a6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 200% 200%;
+            animation: gradient-shift 3s ease infinite;
+        }
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        .hero-pattern {
+            position: relative;
+            padding-top: 100px; 
+            padding-bottom: 100px;
+            overflow: hidden;
+        }
+        .hero-pattern::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url('figures/gen5.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: blur(6px);
+            opacity: 0.85;
+            z-index: 0;
+        }
+        .hero-pattern::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.35), rgba(240,249,255,0.2));
+            z-index: 1;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 10;
+        }
+        .text-shadow { text-shadow: 0 2px 8px rgba(0,0,0,0.4), 0 4px 12px rgba(0,0,0,0.2); }
+        .hero-inner { max-width: 1280px; margin: 0 auto; padding: 0 16px; }
+        .hero-title { font-weight: 700; color: #ffffff; text-align: center; line-height: 1.3; margin-bottom: 24px; }
+        .hero-sub { margin-top: 24px; color: rgba(255,255,255,0.95); text-align: center; max-width: 800px; margin-left: auto; margin-right: auto; font-size: 20px; line-height: 1.7; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+        
+        .hero-features {
+            margin-top: 32px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+        }
+        .hero-feature-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: rgba(255,255,255,0.25);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 999px;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 500;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            transition: all 200ms ease;
+        }
+        .hero-feature-badge i {
+            font-size: 16px;
+        }
+        .hero-feature-badge:hover {
+            background: rgba(255,255,255,0.35);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .author-list { margin-top: 40px; display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
+        .author-card { 
+            background: rgba(255,255,255,0.15); 
+            backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 16px; 
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15); 
+            padding: 24px 32px; 
+            display: inline-block;
+            text-align: center;
+            transition: all 200ms ease;
+        }
+        .author-card:hover {
+            background: rgba(255,255,255,0.22);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+        }
+        .author-card .name { 
+            font-size: 18px; 
+            font-weight: 600; 
+            color: rgba(255,255,255,0.98);
+            margin-bottom: 6px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        .author-card .aff { 
+            font-size: 15px; 
+            color: rgba(255,255,255,0.85);
+            font-weight: 400;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        .author-card a { 
+            color: rgba(255,255,255,0.98); 
+            text-decoration: none; 
+            transition: color 200ms ease;
+        }
+        .author-card a:hover { 
+            color: rgba(255,255,255,1);
+            text-shadow: 0 0 8px rgba(255,255,255,0.5);
+        }
+
+        .project-links { margin-top: 40px; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+        .btn-link { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 8px; color: #ffffff; text-decoration: none; font-weight: 500; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: transform 160ms ease, box-shadow 160ms ease, opacity 160ms ease; }
+        .btn-link:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.12); }
+        .btn-primary { background: #0ea5e9; }
+        .btn-primary:hover { background: #0284c7; }
+        .btn-dark { background: #111827; }
+        .btn-dark:hover { background: #374151; }
+        .btn-yellow { background: #ca8a04; }
+        .btn-yellow:hover { background: #a16207; }
+        .text-primary-600 { color: #0ea5e9; }
+        .text-green-600 { color: #10b981; }
+
+        #demo { background: #ffffff; }
+        .demo-wrap { position: relative; max-width: 1200px; margin: 0 auto; }
+        .demo-strip {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            overflow: visible;
+        }
+        .demo-item {
+            flex: 0 0 auto;
+            width: calc(25% - 9px);
+            min-width: 220px;
+            height: 220px;
+            border-radius: 16px;
+            overflow: hidden;
+            background: rgba(255,255,255,1);
+            border: 2px solid;
+            border-image: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(6,182,212,0.15)) 1;
+            box-shadow: 0 8px 24px rgba(59,130,246,.15);
+            position: relative;
+            transition: all 250ms ease;
+        }
+        .demo-item:hover{
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 16px 40px rgba(6,182,212,.25), 0 0 0 1px rgba(59,130,246,.2);
+            border-image: linear-gradient(135deg, rgba(59,130,246,0.3), rgba(6,182,212,0.3)) 1;
+        }
+        .demo-panorama { width: 100%; height: 100%; }
+        @media (max-width: 980px) {
+            .demo-item { width: calc(33.333% - 8px); }
+        }
+        @media (max-width: 720px) {
+            .demo-item { width: calc(50% - 6px); }
+        }
+        @media (max-width: 480px) {
+            .demo-item { width: 100%; }
+        }
+        .demo-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.95);
+            color: #374151;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            cursor: pointer;
+            font-size: 22px;
+            line-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 160ms ease, opacity 160ms ease, background 160ms ease;
+            opacity: 0.9;
+            z-index: 10;
+        }
+        .demo-nav-btn:hover { transform: translateY(-50%) scale(1.06); opacity: 1; background: #ffffff; }
+        .demo-prev { left: 8px; }
+        .demo-next { right: 8px; }
+        .demo-caption { text-align: center; color: #6b7280; margin-top: 10px; font-size: 14px; }
+
+        .demo-prompt-display {
+            margin-top: 16px;
+            padding: 18px;
+            background: linear-gradient(135deg, rgba(240,249,255,0.95), rgba(236,254,255,0.95));
+            border-radius: 16px;
+            border: 2px solid;
+            border-image: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(6,182,212,0.15)) 1;
+            box-shadow: 0 8px 24px rgba(6,182,212,.12);
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #334155;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .demo-prompt-display.active { opacity: 1; }
+        .demo-prompt-display .prompt-text { font-weight: 500; }
+
+        /* Interactive Editing Results */
+        .editing-panel {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(240,249,255,0.9));
+            border: 2px solid;
+            border-image: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(6,182,212,0.15), rgba(20,184,166,0.12)) 1;
+            box-shadow: 0 12px 32px rgba(6,182,212,.15);
+            padding: 28px;
+            border-radius: 20px;
+            backdrop-filter: blur(16px);
+        }
+        .editing-header { text-align: center; margin-bottom: 16px; }
+        .editing-header h2 { margin: 0; font-size: 24px; font-weight: 700; color: #111827; }
+        .editing-header .bar { margin: 16px auto 8px; height: 4px; width: 80px; background: #0ea5e9; border-radius: 999px; }
+        .editing-subtitle { margin-top: 8px; color: #6b7280; font-size: 14px; }
+        .editing-wrap { position: relative; max-width: 1200px; margin: 0 auto; }
+        .editing-strip {
+            display: flex;
+            gap: 12px;
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-behavior: smooth;
+            padding: 0 56px; 
+            scrollbar-width: none; 
+        }
+        .editing-strip::-webkit-scrollbar { display: none; } 
+        .editing-item {
+            flex: 0 0 540px;
+            width: 540px;
+            min-width: 500px;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+        @media (max-width: 980px) {
+            .editing-item { flex: 0 0 420px; width: 420px; min-width: 380px; }
+        }
+        @media (max-width: 720px) {
+            .editing-item { flex: 0 0 340px; width: 340px; min-width: 300px; }
+        }
+
+        #gallery .demo-nav-btn { display: none; }
+
+        .quad-wrap { position: relative; max-width: 1200px; margin: 0 auto; }
+        .quad-strip { display: flex; gap: 12px; overflow: hidden; scroll-behavior: smooth; justify-content: flex-start; }
+        .quad-item { flex: 0 0 100%; width: 100%; border-radius: 8px; overflow: hidden; }
+
+        /* Abstract & Others */
+        #abstract .section-header, #motivation .section-header, #approach .section-header, #results .section-header, #applications .section-header { text-align: center; margin-bottom: 24px; }
+        .section-header h2 { margin: 0; font-size: 28px; font-weight: 700; color: #111827; }
+        .section-header .bar { margin: 16px auto 0; height: 4px; width: 80px; background: #0ea5e9; border-radius: 999px; }
+        
+        /* Interactive Editing Results header */
+        .editing-header { text-align: center; margin-bottom: 16px; }
+        .editing-header h2 { margin: 0; font-size: 24px; font-weight: 700; color: #111827; }
+        
+        .abstract-card, .approach-card, .results-card, .applications-card { background: #ffffff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 24px; max-width: 900px; margin: 0 auto; }
+        .approach-card { max-width: 1100px; }
+        .prose, .approach-prose, .results-prose { color: #374151; font-size: 16px; line-height: 1.8; }
+        .prose p, .approach-prose p, .results-prose p { margin: 0 0 16px; }
+
+        /* Applications */
+        #applications .app-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 16px;
+        }
+        #applications .app-item {
+            background: #f9fafb;
+            border: 1px solid rgba(59,130,246,0.12);
+            border-radius: 14px;
+            padding: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        #applications .app-item-wide { grid-column: 1 / -1; }
+        #applications .app-item h3 {
+            margin: 0 0 10px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #3b82f6;
+        }
+        #applications .app-item p {
+            margin: 0;
+            color: #374151;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+        #applications .app-media { margin-top: 12px; }
+        #applications .app-pairs {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 12px;
+            align-items: center;
+        }
+        #applications .app-pair {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            align-items: start;
+            width: 100%;
+            max-width: 100%;
+        }
+        #applications .app-pair > div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        #applications .app-col-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #475569;
+            margin-bottom: 8px;
+            letter-spacing: 0.01em;
+            text-align: center;
+        }
+        #applications .app-image {
+            width: auto;
+            height: auto;
+            max-width: 100% !important;
+            border-radius: 14px;
+            background: #0b1220;
+            object-fit: contain;
+            display: block;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            margin: 0 auto;
+        }
+        #applications .app-video {
+            width: auto;
+            height: auto;
+            max-width: 100% !important;
+            border-radius: 14px;
+            background: #000000;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            object-fit: contain;
+            margin: 0 auto;
+        }
+        #applications .app-note {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 13px;
+            color: #64748b;
+        }
+        #applications .app-note code {
+            background: rgba(15, 23, 42, 0.06);
+            border-radius: 8px;
+            padding: 2px 8px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+        @media (max-width: 900px) {
+            #applications .app-grid { grid-template-columns: 1fr; }
+            #applications .app-item-wide { grid-column: auto; }
+            #applications .app-pair { grid-template-columns: 1fr; }
+        }
+
+        .motivation-figure {
+            background: #f9fafb;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            padding: 16px;
+            max-width: 1100px;
+            margin: 0 auto 24px;
+            display: flex;
+            gap: 16px;
+            align-items: stretch;
+        }
+        .motivation-figure .motivation-img {
+            flex: 0 0 60%;
+            max-width: 650px;
+            display: flex;
+        }
+        .motivation-figure img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            display: block;
+        }
+        .motivation-figure .motivation-text {
+            flex: 1 1 0;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+        .motivation-card { background: #ffffff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 18px; }
+        .motivation-card h3 { 
+            margin: 0 0 10px; 
+            font-size: 18px; 
+            font-weight: 700;
+            color: #3b82f6;
+        }
+        .motivation-card p, .motivation-card li { color: #374151; font-size: 14px; line-height: 1.7; }
+        @media (max-width: 900px) {
+            .motivation-figure { flex-direction: column; }
+            .motivation-figure .motivation-img { flex: 0 0 auto; max-width: 100%; }
+        }
+        
+        .approach-figure { margin-bottom: 16px; }
+        .approach-figure img { width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); display: block; }
+
+        /* Footer */
+        .site-footer { background: #111827; color: #ffffff; padding: 48px 0; margin-top: 24px; }
+        .footer-inner { max-width: 1200px; margin: 0 auto; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+        .footer-brand { display: flex; align-items: center; gap: 12px; }
+        .footer-brand img { height: 40px; width: 40px; display: block; }
+        .footer-links { display: flex; gap: 16px; }
+        .footer-links a { color: #d1d5db; text-decoration: none; }
+        .footer-links a:hover { color: #ffffff; }
+        .footer-copy { text-align: center; color: #9ca3af; margin-top: 16px; font-size: 13px; }
+    </style>
+</head>
+<body>
+    <header class="top-banner">
+        <div class="top-banner-inner">
+            <div class="brand">
+                <img src="figures/logo.png" alt="World-Shaper Logo">
+                <span class="title">World-Shaper</span>
+            </div>
+            <nav class="top-nav">
+                <a href="#abstract">Abstract</a>
+                <a href="#motivation">Motivation</a>
+                <a href="#approach">Approach</a>
+                <a href="#results">Results</a>
+                <a href="#applications">Applications</a>
+                <a href="#gallery">Gallery</a>
+                <a href="#" target="_blank" class="btn-demo">Demo</a>
+            </nav>
+        </div>
+    </header>
+    <section class="hero-pattern">
+        <div class="hero-inner hero-content">
+            <div class="text-center">
+                <h1 class="hero-title text-shadow" style="font-size: 48px;">
+                    <span class="gradient-text">World-Shaper</span>: A Unified Framework for 360° Panoramic Editing
+                </h1>
+                
+                <p class="hero-sub text-shadow">
+                    Create panoramic content interactively with geometry-aware editing. Maintain spherical consistency, 
+                    enable distortion-adaptive reasoning, and create coherent 360° visual experiences through 
+                    our unified ERP-domain framework.
+                </p>
+
+                <div class="hero-features">
+                    <span class="hero-feature-badge">📄 Paper</span>
+                    <span class="hero-feature-badge"><i class="fab fa-github"></i> GitHub</span>
+                    <span class="hero-feature-badge">🚀 Project</span>
+                    <span class="hero-feature-badge">📊 Dataset</span>
+                    <span class="hero-feature-badge">🤗 Hugging Face</span>
+                </div>
+
+                <div class="author-list">
+                    <div class="author-card">
+                        <div class="name"><a target="_blank" href="#">Anonymous Authors</a></div>
+                        <div class="aff">Anonymous Institutions</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <main class="container">
+
+        <section id="gallery">
+            <h2 class="text-3xl font-bold text-gray-900"> Gallery</h2>
+            <p class="section-subtitle">Click on images to see their generation prompts below</p>
+            <div class="demo-wrap">
+                <button id="demoPrev" class="demo-nav-btn demo-prev" aria-label="Previous">❮</button>
+                <button id="demoNext" class="demo-nav-btn demo-next" aria-label="Next">❯</button>
+                <div id="demoStrip" class="demo-strip"></div>
+            </div>
+            <div id="promptDisplay" class="demo-prompt-display"><div class="prompt-text">Click any panorama above to view its generation prompt</div></div>
+        </section>
+
+        <div class="editing-panel" style="margin-top: 16px;">
+            <div class="editing-inner">
+                <div class="editing-header">
+                    <h2>Interactive Editing Results</h2>
+                    <div class="editing-subtitle">Click-drag to sync left/right viewers.</div>
+                </div>
+                <div class="editing-wrap">
+                    <button id="editPrev" class="demo-nav-btn demo-prev" aria-label="Previous">❮</button>
+                    <button id="editNext" class="demo-nav-btn demo-next" aria-label="Next">❯</button>
+                    <div id="editingStrip" class="editing-strip"></div>
+                </div>
+            </div>
+        </div>
+        
+        <section id="abstract">
+            <div class="section-header">
+                <h2>Abstract</h2>
+                <div class="bar"></div>
+            </div>
+            <div class="abstract-card">
+                <div class="prose">
+                    <p class="mb-6">
+                        Editing panoramic images is crucial for creating realistic 360° visual experiences, yet existing perspective-based image editing methods fail to model the spatial structure of panoramas. Conventional cube-map decompositions attempt to bypass this issue but inevitably break global consistency due to their mismatch with spherical geometry. 
+                      </p>
+                    <p class="mb-6">
+                        Motivated by this insight, we reformulate panoramic editing directly in the ERP domain and present <span class="font-bold text-primary-600">World-Shaper</span> (<span class="font-bold text-primary-600">World-Shaper</span>), a unified <span class="text-green-600 font-medium">geometry‑aware framework</span> for panoramic image editing. 
+                    </p>
+                    <p>
+                        To overcome the scarcity of paired data, we adopt a novel <span class="text-green-600 font-medium">generate‑then‑edit paradigm</span>, in which a controllable generation model synthesized panoramic pairs for supervised editing learning. 
+                    </p>
+                    <p>
+                        To address geometric distortion, we design a <span class="text-green-600 font-medium">geometry‑aware learning strategy</span> that enables <span class="text-green-600 font-medium">distortion‑adaptive reasoning</span> and consistent manipulation across latitudes through <span class="text-green-600 font-medium">spatially adaptive supervision</span> and <span class="text-green-600 font-medium">progressive curriculum training</span>.
+                    </p>
+                    <p>
+                        Extensive experiments on our new benchmark <span class="text-green-600 font-medium">PEBench</span> demonstrate that <span class="font-bold text-primary-600">World‑Shaper</span> achieves superior <span class="text-green-600 font-medium">geometric consistency</span>, <span class="text-green-600 font-medium">editing fidelity</span>, and <span class="text-green-600 font-medium">text controllability</span> compared to state‑of‑the‑art methods, enabling coherent and flexible 360° visual world creation.
+                    </p>
+                </div>
+            </div>
+        </section>
+        <section id="motivation">
+            <div class="section-header">
+                <h2>Motivation</h2>
+                <div class="bar"></div>
+            </div>
+
+            <div class="motivation-figure">
+                <div class="motivation-img">
+                    <img src="/figures/observation.jpg" alt="Motivation Figure">
+                </div>
+                <div class="motivation-text">
+                    <div class="motivation-card">
+                        <h3>The Challenge: Perspective Editing on Panoramas</h3>
+                        <div>
+                            <p>Editing panoramas using perspective tools leads to:</p>
+                            <ul>
+                                <li>Loss of spherical layout and global consistency</li>
+                                <li>Artifacts across cube-map boundaries</li>
+                                <li>Inconsistent attributes across latitudes</li>
+                                <li>Difficulty preserving geometry-aware semantics</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="motivation-card">
+                        <h3>Our Insight: ERP-aware Editing</h3>
+                        <div>
+                            <p>Operate directly in the equirectangular (ERP) domain with geometry-aware supervision to:</p>
+                            <ul>
+                                <li>Maintain spherical layout and continuity</li>
+                                <li>Enable distortion-adaptive reasoning</li>
+                                <li>Unify editing with consistent latitudinal behavior</li>
+                                <li>Bridge generation and editing quality for 360° scenes</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="approach">
+            <div class="section-header">
+                <h2>Approach</h2>
+                <div class="bar"></div>
+            </div>
+            <div class="approach-card">
+                <div class="approach-figure">
+                    <img src="/figures/pipe.jpg" alt="World-Shaper Pipeline Overview">
+                </div>
+                <div class="approach-prose">
+                    <p><span class="font-semibold" style="color: #3b82f6; font-weight: 700;">Overview.</span> We propose a unified pipeline that performs panoramic editing directly in the ERP domain, enabling geometry-consistent reasoning and manipulation.</p>
+                    <p><span class="font-semibold" style="color: #3b82f6; font-weight: 700;">Training.</span> We adopt a generate‑then‑edit paradigm for data, combined with geometry‑aware learning strategies including distortion‑adaptive objectives and spatially adaptive supervision.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="results">
+            <div class="section-header">
+                <h2>Results</h2>
+                <div class="bar"></div>
+            </div>
+            <div class="py-4 bg-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="bg-gray-50 rounded-xl shadow-md p-4 max-w-5xl mx-auto">
+                        <div class="mt-4">
+                            <img src="/figures/compare_sota.png" alt="Qualitative Comparison" class="w-full h-auto rounded-lg shadow-sm">
+                        </div>
+                        <div class="prose-lg text-gray-700 mt-4">
+                            <p class="mb-0 text-center">
+                                Qualitative comparison with four top-performing SOTA methods on panorama editing. White boxes indicate the selected regions for visualization. The corresponding edited areas are shown in the perspective view within the red boxes.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3">
+                <div class="quad-wrap">
+                    <button id="quadPrev" class="demo-nav-btn demo-prev" aria-label="Previous">❮</button>
+                    <button id="quadNext" class="demo-nav-btn demo-next" aria-label="Next">❯</button>
+                    <div id="quadStrip" class="quad-strip"></div>
+                </div>
+            </div>
+
+        </section>
+
+        <section id="applications">
+            <div class="section-header">
+                <h2>Applications</h2>
+                <div class="bar"></div>
+            </div>
+            <div class="applications-card">
+                <div class="prose">
+                    <p>
+                        Our method supports diverse applications.
+                    </p>
+                    <div class="app-grid">
+                        <div class="app-item">
+                            <h3><b><i>3D World Generation</i></b></h3>
+                            <p>
+                                Users can begin by generating a panorama from either a text prompt or a local-view input image. A pre-trained depth estimation method is then applied to obtain the corresponding depth map of the panorama. Using this depth information, the 2D pixels are lifted into 3D points, and a sequence of camera poses is defined. The panorama is then rendered along these camera trajectories, and our method is employed to inpaint any missing regions in the rendered views. Finally, a panoramic Gaussian Splatting (GS) representation is optimized using the inpainted panorama frames.
+                            </p>
+                        </div>
+                        <div class="app-item">
+                            <h3><b><i>Indoor Design</i></b></h3>
+                            <p>
+                                Users fetch a desired piece of furniture from a catalog and specify a location in the room; our method then seamlessly integrates the object into the panoramic scene, adapting to the spherical geometry and lighting conditions for a photorealistic visualization.
+                            </p>
+                        </div>
+                        <div class="app-item app-item-wide">
+                            <h3><b><i>Video Demo</i></b></h3>
+                            <p>
+                                3D World Generation visualization: the left column shows the panorama image, and the right column shows the reconstructed 3D world video.
+                            </p>
+                            <div class="app-media">
+                                <div class="app-pairs">
+                                    <div class="app-pair">
+                                        <div>
+                                            <div class="app-col-title">Panorama Image</div>
+                                            <img class="app-image" src="videos/house.png" alt="Panorama Image (House)">
+                                        </div>
+                                        <div>
+                                            <div class="app-col-title">3D World</div>
+                                            <video id="appVideoHouse" class="app-video" controls muted loop playsinline preload="metadata">
+                                                <source src="videos/house.mp4" type="video/mp4">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        </div>
+                                    </div>
+                                    <div class="app-pair">
+                                        <div>
+                                            <div class="app-col-title">Panorama Image</div>
+                                            <img class="app-image" src="videos/beach.png" alt="Panorama Image (Beach)">
+                                        </div>
+                                        <div>
+                                            <div class="app-col-title">3D World</div>
+                                            <video id="appVideoBeach" class="app-video" controls muted loop playsinline preload="metadata">
+                                                <source src="videos/beach.mp4" type="video/mp4">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <img src="figures/logo.png" alt="World‑Shaper Logo">
+                <span style="font-weight:600;">World‑Shaper</span>
+            </div>
+            <div class="footer-links">
+                <a href="#abstract">Abstract</a>
+                <a href="#motivation">Motivation</a>
+                <a href="#approach">Approach</a>
+                <a href="#results">Results</a>
+                <a href="#applications">Applications</a>
+            </div>
+        </div>
+        <div class="footer-copy">© 2026 World‑Shaper Team. All rights reserved.</div>
+    </footer>
+
+    <script src="pannellum/pannellum.js"></script>
+    <script src="sync-viewers.js"></script>
+    <script>
+        const resultGroups = [];
+
+        const root = document.getElementById('results-list');
+        if(root){
+            resultGroups.forEach(g => {
+                createSyncedViewerPair(root, {
+                    left: { panorama: g.left },
+                    right: { panorama: g.right },
+                    size: { width: 400, height: 300 },
+                    meta: { title: g.title, description: g.desc }
+                });
+            });
+        }
+
+        const demoItems = [
+            { src: 'figures/gen1.jpg', caption: 'gen1.jpg', prompt: 'A grand Gothic-style mansion rising from a misty forest at dusk, surrounded by an intricate symmetrical hedge maze.' },
+            { src: 'figures/gen2.jpg', caption: 'gen2.jpg', prompt: 'A 360° panorama of a winding path through a vibrant wildflower field at sunset, leading toward silhouetted trees under warm, cloudy skies.' },
+            { src: 'figures/gen3.jpg', caption: 'gen3.jpg', prompt: 'A 360° alien landscape viewed from a cave mouth, filled with bioluminescent purple and blue flora and water, under a colorful nebula sky at dawn, with strange rock arches and spires.' },
+            { src: 'figures/gen4.jpg', caption: 'gen4.jpg', prompt: 'Equirectangular 360 panorama, ancient dark stone towers in a swamp connected by rope bridges, glowing green windows, vibrant emerald aurora sky, twisted roots, mystical atmosphere, photorealistic fantasy landscape, 8k resolution.' },
+            { src: 'figures/gen5.jpg', caption: 'gen5.jpg', prompt: 'A bright magical fantasy landscape featuring a floating white castle rising from giant blue crystal formations above a glowing lake. Colorful trees with red, orange, and green foliage frame the scene, surrounded by vibrant flowers and smooth stone paths. Warm sunset light illuminates distant mountains and soft clouds, creating a lush, whimsical, highly detailed 360° environment.' },
+            { src: 'figures/gen6.jpg', caption: 'gen6.jpg', prompt: 'A 360° view inside a mystical cave filled with glowing purple lotus crystals and flowing neon blue water, leading to multiple circular portals opening onto a pink landscape.' },
+            { src: 'figures/gen7.jpg', caption: 'gen7.jpg', prompt: 'A sunny 360° courtyard with wooden cottages on the left and an old worn two-story building on the right. Stone pathways curve through green lawns bordered by bright orange flowers. Tall trees cast soft shadows, and rustic wooden garden decorations sit near the cottages. Clear blue sky and warm daylight create a peaceful village atmosphere' },
+            { src: 'figures/gen8.jpg', caption: 'gen8.jpg', prompt: 'Equirectangular 360 panorama, modern open-plan living room and kitchen, curved white island with bar stools, light hardwood floors, large windows with daylight, beige sofas, fireplace, contemporary interior design, photorealistic.' }
+        ];
+        const demoStrip = document.getElementById('demoStrip');
+        const demoCaption = document.getElementById('demoCaption');
+        const prevBtn = document.getElementById('demoPrev');
+        const nextBtn = document.getElementById('demoNext');
+        const promptDisplay = document.getElementById('promptDisplay');
+
+        const demoCards = []; 
+        let demoObserver = null;
+        let demoResizeTimer = null;
+
+        function ensureDemoViewer(rec) {
+            if (rec.viewer) return;
+            rec.viewer = pannellum.viewer(rec.inner, {
+                type: 'equirectangular',
+                panorama: rec.item.src,
+                autoLoad: true,
+                showFullscreenCtrl: true,
+                showZoomCtrl: true,
+
+                hfov: 120,
+                minHfov: 50,
+                maxHfov: 120,
+                autoRotate: -5
+            });
+        }
+
+        function destroyDemoViewer(rec) {
+            if (!rec.viewer) return;
+            try { rec.viewer.destroy(); } catch (e) {}
+            rec.viewer = null;
+            rec.inner.innerHTML = '';
+        }
+
+        function resizeDemoViewersSoon() {
+            if (demoResizeTimer) window.clearTimeout(demoResizeTimer);
+            demoResizeTimer = window.setTimeout(() => {
+                demoCards.forEach(rec => {
+                    if (rec.viewer) {
+                        try { rec.viewer.resize(); } catch (e) {}
+                    }
+                });
+            }, 250);
+        }
+
+        function createDemoCard(item, index) {
+            const card = document.createElement('div');
+            card.className = 'demo-item';
+            const inner = document.createElement('div');
+            inner.className = 'demo-panorama';
+            card.appendChild(inner);
+            card.dataset.demoIndex = String(index);
+            demoStrip.appendChild(card);
+
+            const rec = { card, inner, item, viewer: null };
+            demoCards[index] = rec;
+
+            card.addEventListener('click', function () {
+                const text = item.prompt || item.caption || '';
+                promptDisplay.innerHTML = '<div class="prompt-text"><strong>Prompt:</strong> ' + text + '</div>';
+                if (!promptDisplay.classList.contains('active')) {
+                    promptDisplay.classList.add('active');
+                }
+            });
+        }
+
+        function setupDemoObserver() {
+            if (!('IntersectionObserver' in window)) {
+                demoCards.forEach(rec => ensureDemoViewer(rec));
+                return;
+            }
+            demoObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const card = entry.target;
+                    const idx = parseInt(card.dataset.demoIndex || '-1', 10);
+                    if (isNaN(idx)) return;
+                    const rec = demoCards[idx];
+                    if (!rec) return;
+                    if (entry.isIntersecting && entry.intersectionRatio > 0.1) {
+                        ensureDemoViewer(rec);
+                    } else {
+                        destroyDemoViewer(rec);
+                    }
+                });
+                resizeDemoViewersSoon();
+            }, {
+                root: null,
+                threshold: [0.1, 0.25]
+            });
+            demoCards.forEach(rec => demoObserver.observe(rec.card));
+        }
+
+        function initDemoStrip() {
+            demoItems.forEach((it, idx) => createDemoCard(it, idx));
+            updateNavButtons();
+            setupDemoObserver();
+            resizeDemoViewersSoon();
+        }
+
+        function scrollAmount() {
+            const first = demoStrip.querySelector('.demo-item');
+            if (!first) return 0;
+            const cardWidth = first.getBoundingClientRect().width + 12; 
+            const visibleCards = Math.floor(demoStrip.getBoundingClientRect().width / cardWidth) || 3;
+            return cardWidth * visibleCards;
+        }
+
+        prevBtn.addEventListener('click', function () {
+            const target = Math.max(0, demoStrip.scrollLeft - scrollAmount());
+            demoStrip.scrollTo({ left: target, behavior: 'smooth' });
+            resizeDemoViewersSoon();
+        });
+        nextBtn.addEventListener('click', function () {
+            const maxScroll = demoStrip.scrollWidth - demoStrip.clientWidth;
+            const target = Math.min(maxScroll, demoStrip.scrollLeft + scrollAmount());
+            demoStrip.scrollTo({ left: target, behavior: 'smooth' });
+            resizeDemoViewersSoon();
+        });
+
+        function updateNavButtons() {
+            prevBtn.disabled = false;
+            nextBtn.disabled = false;
+            prevBtn.style.opacity = '0.9';
+            nextBtn.style.opacity = '0.9';
+        }
+        demoStrip.addEventListener('scroll', updateNavButtons);
+        demoStrip.addEventListener('scroll', resizeDemoViewersSoon);
+        window.addEventListener('resize', () => { updateNavButtons(); resizeDemoViewersSoon(); });
+
+        initDemoStrip();
+
+        // Interactive Editing Results
+        const editingStrip = document.getElementById('editingStrip');
+        const editPrevBtn = document.getElementById('editPrev');
+        const editNextBtn = document.getElementById('editNext');
+        const editingRecords = []; 
+        let editResizeTimer = null;
+
+        function resizeEditingViewersSoon() {
+            if (editResizeTimer) window.clearTimeout(editResizeTimer);
+            editResizeTimer = window.setTimeout(() => {
+                editingRecords.forEach(rec => {
+                    const p = rec.pair;
+                    if (!p) return;
+                    try {
+                        const rootEl = p.root;
+                        if (rootEl) {
+                            const viewers = rootEl.querySelectorAll('.sv-viewer');
+                            viewers.forEach(vEl => {
+                                const w = vEl.getBoundingClientRect().width;
+                                if (w > 0) {
+                                    vEl.style.height = w + 'px';
+                                }
+                            });
+                        }
+                        p.left && p.left.resize();
+                        p.right && p.right.resize();
+                    } catch (e) {}
+                });
+            }, 250);
+        }
+        const editingGroups = [
+            { left: 'figures/add_a.jpg', right: 'figures/add_b.jpg', title: 'Add', desc: 'Add a deer in the left wheat field, a scarecrow beside the center path, and a cat sitting on the right side of the path.' },
+            { left: 'figures/add2_a.jpg', right: 'figures/add2_b.jpg', title: 'Add', desc: 'Add a light-wood bench on the left side, outside the sandbox area, and add a white metal-frame bench on the right side, inside the sandbox area.' },
+            { left: 'figures/add3_a.jpg', right: 'figures/add3_b.jpg', title: 'Add', desc: 'Add a snowman in the lower-right corner of the image.' },
+            { left: 'figures/modify_a.jpg', right: 'figures/modify_b.jpg', title: 'Modify', desc: 'Modify the wooden walkway into a stone walkway and extend the walkway forward.' },
+            { left: 'figures/move2_a.jpg', right: 'figures/move2_b.jpg', title: 'Move', desc: 'Move the speaker forward and position it closer to the camera.' },
+            { left: 'figures/move_a.jpg', right: 'figures/move_b.jpg', title: 'Move', desc: 'Move the white car to the right side of the panorama and position it lower in the frame, close to the curb.' },
+            { left: 'figures/replace2_a.jpg', right: 'figures/replace2_b.jpg', title: 'Replace', desc: 'Replace the flower planter with a wooden bench.' },
+            { left: 'figures/replace_a.jpg', right: 'figures/replace_b.jpg', title: 'Replace', desc: 'Replace the chandelier on the ceiling with a single ceiling light, and replace the two white rugs on the floor with two white chairs.' }
+        ];
+
+        function createEditingCard(group) {
+            const card = document.createElement('div');
+            card.className = 'editing-item';
+            editingStrip.appendChild(card);
+            const rec = { card, group, pair: null };
+            editingRecords.push(rec);
+        }
+
+        function initEditingStrip() {
+            editingGroups.forEach(g => createEditingCard(g));
+            updateEditNav();
+            setupEditingObserver();
+        }
+
+        function ensureEditingPair(rec) {
+            if (rec.pair) return;
+            rec.pair = createSyncedViewerPair(rec.card, {
+                left: { panorama: rec.group.left, pannellum: { hfov: 120, minHfov: 50, maxHfov: 120 } },
+                right: { panorama: rec.group.right, pannellum: { hfov: 120, minHfov: 50, maxHfov: 120 } },
+                size: { width: 'fluid', height: 280 },
+                meta: { title: rec.group.title, description: rec.group.desc }
+            });
+            resizeEditingViewersSoon();
+        }
+
+        function destroyEditingPair(rec) {
+            if (!rec.pair) return;
+            try { rec.pair.destroy(); } catch (e) {}
+            rec.pair = null;
+            rec.card.innerHTML = '';
+        }
+
+        function setupEditingObserver() {
+            if (!('IntersectionObserver' in window)) {
+                editingRecords.forEach(rec => ensureEditingPair(rec));
+                resizeEditingViewersSoon();
+                return;
+            }
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const card = entry.target;
+                    const rec = editingRecords.find(r => r.card === card);
+                    if (!rec) return;
+                    if (entry.isIntersecting && entry.intersectionRatio > 0.1) {
+                        ensureEditingPair(rec);
+                    } else {
+                        destroyEditingPair(rec);
+                    }
+                });
+            }, {
+                root: null,
+                threshold: [0.1, 0.25]
+            });
+            editingRecords.forEach(rec => observer.observe(rec.card));
+        }
+
+        function editScrollAmount() {
+            const first = editingStrip.querySelector('.editing-item');
+            if (!first) return 0;
+            const w = first.getBoundingClientRect().width + 12; 
+            const visible = Math.floor(editingStrip.getBoundingClientRect().width / w) || 3;
+            return w * visible;
+        }
+
+        function updateEditNav() {
+            editPrevBtn.disabled = false;
+            editNextBtn.disabled = false;
+            editPrevBtn.style.opacity = '0.9';
+            editNextBtn.style.opacity = '0.9';
+        }
+
+        editPrevBtn.addEventListener('click', function () {
+            const target = Math.max(0, editingStrip.scrollLeft - editScrollAmount());
+            editingStrip.scrollTo({ left: target, behavior: 'smooth' });
+            resizeEditingViewersSoon();
+        });
+        editNextBtn.addEventListener('click', function () {
+            const maxScroll = editingStrip.scrollWidth - editingStrip.clientWidth;
+            const target = Math.min(maxScroll, editingStrip.scrollLeft + editScrollAmount());
+            editingStrip.scrollTo({ left: target, behavior: 'smooth' });
+            resizeEditingViewersSoon();
+        });
+        editingStrip.addEventListener('scroll', updateEditNav);
+        editingStrip.addEventListener('scroll', resizeEditingViewersSoon);
+        window.addEventListener('resize', () => { updateEditNav(); resizeEditingViewersSoon(); });
+
+        initEditingStrip();
+
+        const quadStrip = document.getElementById('quadStrip');
+        const quadPrev = document.getElementById('quadPrev');
+        const quadNext = document.getElementById('quadNext');
+        
+        const quadGroups = [
+            {
+                prompt: "Add a table in front of the sofa, a dog to the right, and lights to the ceiling.",
+                items: ['figures/compare_1_a.jpg','figures/compare_1_gemini.png','figures/compare_1_qwen.webp','figures/compare_1_b.jpg']
+            },
+            {
+                prompt: "Change the manhole cover at the entrance to a round one.",
+                items: ['figures/compare_2_a.jpg','figures/compare_2_gemini.png','figures/compare_2_qwen.webp','figures/compare_2_b.jpg']
+            },
+            {
+                prompt: "Move the orange armchair on the right to the center of the room.",
+                items: ['figures/compare_3_b.jpg','figures/compare_3_gemini.png','figures/compare_3_qwen.webp','figures/compare_3_a.jpg']
+            }
+        ];
+
+        const quadRecords = []; 
+
+        function initQuadStrip() {
+            quadGroups.forEach((group, index) => {
+                const card = document.createElement('div');
+                card.className = 'quad-item';
+                card.style.height = '340px'; 
+                card.style.display = 'flex';
+                card.style.flexDirection = 'column';
+                card.style.position = 'relative';
+                card.style.minWidth = '100%';
+                
+                quadStrip.appendChild(card);
+
+                const rec = { 
+                    card: card, 
+                    items: group.items, 
+                    prompt: group.prompt,
+                    title: 'Example #' + (index + 1),
+                    instance: null 
+                };
+                quadRecords.push(rec);
+            });
+            
+            setupQuadObserver();
+            updateQuadNav();
+        }
+
+        function loadQuadViewer(rec) {
+            if (rec.instance) return; 
+            
+            rec.card.innerHTML = '';
+
+            const viewerDiv = document.createElement('div');
+            viewerDiv.style.position = 'relative';
+            viewerDiv.style.width = '100%';
+            viewerDiv.style.flex = '1'; 
+            viewerDiv.style.minHeight = '220px';
+            rec.card.appendChild(viewerDiv);
+
+            const textDiv = document.createElement('div');
+            textDiv.style.padding = '12px 16px';
+            textDiv.style.marginTop = '30px';
+            textDiv.style.fontSize = '16px';
+            textDiv.style.color = '#4b5563';
+            textDiv.style.textAlign = 'center';
+            textDiv.style.background = '#f9fafb';
+            textDiv.style.borderRadius = '6px';
+            textDiv.style.flex = '0 0 auto';
+            textDiv.style.width = '100%';
+            textDiv.style.boxSizing = 'border-box';
+            textDiv.style.wordWrap = 'break-word';
+            textDiv.style.lineHeight = '1.5';
+            textDiv.innerHTML = `<strong>Prompt:</strong> ${rec.prompt}`;
+            rec.card.appendChild(textDiv);
+
+            if(typeof createComparisonQuad === 'function') {
+                rec.instance = createComparisonQuad(viewerDiv, { 
+                    title: '', 
+                    labels: ['Original', 'Nano Banana Pro', 'Qwen-Image-Edit 2511', 'Ours'],
+                    items: rec.items,
+                    size: { width: 'fluid', height: 220 }, 
+                    pannellum: { autoRotate: -5, hfov: 120, minHfov: 50, maxHfov: 120 }
+                });
+            }
+        }
+
+        function destroyQuadViewer(rec) {
+            if (!rec.instance && rec.card.innerHTML === '') return;
+
+            if (rec.instance && typeof rec.instance.destroy === 'function') {
+                rec.instance.destroy();
+            }
+
+            rec.card.innerHTML = '';
+            rec.instance = null;
+        }
+
+        function setupQuadObserver() {
+            if (!('IntersectionObserver' in window)) {
+                quadRecords.forEach(loadQuadViewer);
+                return;
+            }
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const card = entry.target;
+                    const rec = quadRecords.find(r => r.card === card);
+                    if (!rec) return;
+
+                    if (entry.isIntersecting && entry.intersectionRatio > 0.05) {
+                        loadQuadViewer(rec);
+                    } else {
+                        destroyQuadViewer(rec);
+                    }
+                });
+            }, {
+                root: quadStrip,
+                threshold: [0.05, 0.2] 
+            });
+
+            quadRecords.forEach(rec => observer.observe(rec.card));
+        }
+
+        let quadIndex = 0;
+        const totalQuads = quadGroups.length;
+
+        function getQuadPageWidth() {
+            return quadStrip.clientWidth || 1; 
+        }
+
+        function scrollToQuad(index) {
+            const pageW = getQuadPageWidth();
+            const target = index * pageW;
+            quadStrip.scrollTo({ left: target, behavior: 'smooth' });
+        }
+
+        function updateQuadNav() {
+            if (!quadPrev || !quadNext) return;
+            quadPrev.disabled = quadIndex <= 0;
+            quadNext.disabled = quadIndex >= totalQuads - 1;
+            quadPrev.style.opacity = quadPrev.disabled ? '0.3' : '0.9';
+            quadNext.style.opacity = quadNext.disabled ? '0.3' : '0.9';
+            
+            if (totalQuads <= 1) {
+                quadPrev.style.display = 'none';
+                quadNext.style.display = 'none';
+            }
+        }
+
+        if (quadPrev) quadPrev.addEventListener('click', function () {
+            if (quadIndex > 0) {
+                quadIndex--;
+                scrollToQuad(quadIndex);
+                updateQuadNav();
+            }
+        });
+
+        if (quadNext) quadNext.addEventListener('click', function () {
+            if (quadIndex < totalQuads - 1) {
+                quadIndex++;
+                scrollToQuad(quadIndex);
+                updateQuadNav();
+            }
+        });
+
+        let isQuadScrolling;
+        quadStrip.addEventListener('scroll', function () {
+            window.clearTimeout(isQuadScrolling);
+            isQuadScrolling = setTimeout(function() {
+                const pageW = getQuadPageWidth();
+                if (pageW > 0) {
+                    quadIndex = Math.round(quadStrip.scrollLeft / pageW);
+                    updateQuadNav();
+                }
+            }, 100);
+        });
+
+        window.addEventListener('resize', function () { 
+            scrollToQuad(quadIndex); 
+        });
+
+        initQuadStrip();
+    </script>
+    <script>
+        (function() {
+            const beachImg = document.querySelector('img[src="videos/beach.png"]');
+            const videos = [
+                document.getElementById('appVideoHouse'),
+                document.getElementById('appVideoBeach')
+            ].filter(v => v !== null);
+
+            if (!beachImg || videos.length === 0) return;
+
+            function setupVideoSizing() {
+                const imgWidth = beachImg.naturalWidth || beachImg.width;
+                const imgHeight = beachImg.naturalHeight || beachImg.height;
+                
+                const pairContainer = beachImg.closest('.app-pair');
+                if (!pairContainer) return;
+                
+                const containerWidth = pairContainer.getBoundingClientRect().width;
+                const gap = 16;
+                const columnWidth = (containerWidth - gap) / 2;
+                
+                if (imgWidth > 0 && imgHeight > 0 && columnWidth > 0) {
+                    const shortEdge = Math.min(imgWidth, imgHeight);
+                    const imageSize = Math.min(
+                        Math.floor(columnWidth * 0.9),
+                        Math.floor(shortEdge * 0.85)
+                    );
+                    const videoSize = Math.min(
+                        Math.floor(columnWidth * 0.5),
+                        Math.floor(shortEdge * 0.35)
+                    );
+                    
+                    const images = document.querySelectorAll('#applications .app-image');
+                    images.forEach(img => {
+                        img.style.maxWidth = imageSize + 'px';
+                        img.style.maxHeight = imageSize + 'px';
+                        img.style.width = 'auto';
+                        img.style.height = 'auto';
+                    });
+                    
+                    videos.forEach(video => {
+                        video.style.maxWidth = videoSize + 'px';
+                        video.style.maxHeight = videoSize + 'px';
+                        video.style.width = 'auto';
+                        video.style.height = 'auto';
+                    });
+                    
+                    console.log(`Container: ${containerWidth}px, Column: ${columnWidth}px | Images: ${imageSize}px, Videos: ${videoSize}px`);
+                }
+            }
+            
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(setupVideoSizing, 250);
+            });
+
+            if (beachImg.complete) {
+                setupVideoSizing();
+            } else {
+                beachImg.addEventListener('load', setupVideoSizing);
+            }
+
+            let isSyncing = false;
+
+            function syncPlayback(sourceVideo, targetVideos) {
+                if (isSyncing) return;
+                isSyncing = true;
+
+                targetVideos.forEach(target => {
+                    if (target === sourceVideo) return;
+                    
+                    if (sourceVideo.paused) {
+                        if (!target.paused) target.pause();
+                    } else {
+                        if (target.paused) {
+                            target.play().catch(() => {});
+                        }
+                    }
+                    
+                    const timeDiff = Math.abs(target.currentTime - sourceVideo.currentTime);
+                    if (timeDiff > 0.1) {
+                        target.currentTime = sourceVideo.currentTime;
+                    }
+                });
+
+                setTimeout(() => { isSyncing = false; }, 50);
+            }
+
+            videos.forEach(video => {
+                video.addEventListener('play', () => {
+                    syncPlayback(video, videos);
+                });
+                video.addEventListener('pause', () => {
+                    syncPlayback(video, videos);
+                });
+                video.addEventListener('seeked', () => {
+                    syncPlayback(video, videos);
+                });
+                video.addEventListener('timeupdate', () => {
+                    if (!isSyncing && video.currentTime % 0.5 < 0.05) {
+                        syncPlayback(video, videos);
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
